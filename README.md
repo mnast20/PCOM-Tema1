@@ -11,13 +11,13 @@ First, I check if the packet is an ICMP message and then I search the destinatio
 
 
 ## ARP protocol: 
-- ARP request
+- ARP request:
 In the case of an ARP request, there will be some changes made to the package so that it will become an ARP reply. In order to do that, the opcode will be replaced with the value specific to that of an ARP reply, and the sender/source and target/destination addresses will be swapped. After the packet is converted to an ARP reply, it will be sent.
 
-- Generate ARP request
+- Generate ARP request:
 This function will be used if no matching ARP entry was found for the IPv4 packet. Thus, we create a new packet, set its Ether destination address as a broadcast address and its sender address as th best matching route's interface. The ARP header will be formatted as an ARP reply and the sender and target addresses will be set as the best route's interface IP and next hop. The newly created packet's interface will be set as the best route's interface. After, the old packet will be enqueued in a pair with the best route's next hop. In the end, the newly created ARP request packet will be sent.
 
-- ARP reply
+- ARP reply:
 In case of receiving an ARP reply, I search the sender IP address in the ARP table. If an entry is found, then I continue to wait for new packets. Otherwise, a new ARP entry is created using the sender IP and MAC addresses of the packet. Then, I will dequeue all the pairs containing a next hop that is already in the ARP table and send the packet from the pair after changin the Ether header destination address with the corresponding ARP entry's MAC.
 
 
